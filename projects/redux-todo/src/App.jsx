@@ -1,7 +1,8 @@
 import React from 'react'
 import './App.css'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ADDTODO } from './Redux/actions'
+import { ADDTODO,DELETETODO } from './Redux/actions'
 const App = () =>
 {
   const [todoText, setTodoText] = useState('')
@@ -10,10 +11,10 @@ const App = () =>
   return (
     <div>
       <input type="text"  onChange={(e)=>setTodoText(e.target.value)}/>
-      <button onClick={() => dispatch(ADDTODO(Math.random() * 1000, todoText))}>Add</button>
+      <button onClick={() => dispatch(ADDTODO(Math.round(Math.random() * 1000), todoText))}>Add</button>
       <div>
         {todos && todos.map((todo,index) => (
-          <p key={index}>{todo.id}  {todo.text}</p>
+          <p key={index}>{todo.text} <button onClick={()=>dispatch(DELETETODO(todo.id))}>delete</button></p>
         ))}
       </div>
     </div>

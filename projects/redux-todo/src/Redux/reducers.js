@@ -8,7 +8,12 @@ const todoReducer = (state=initialState,action) =>
         case "ADD": return {
             ...state, todos: [...state.todos, {
                 id: action.id,
-                text:action.data }] }
+                text: action.data
+            }]
+        }
+        case "DELETE": return {
+            ...state,todos:state.todos.filter((t)=>t.id!=action.id)
+        }
         default: return state;
     }
     
