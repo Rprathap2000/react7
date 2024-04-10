@@ -1,35 +1,179 @@
-Hooks:
-Hooks are the functions implemented in react 16.8 version. These hooks can replace LifeCycle Methods and can make programs more optimisized.
-functional component are basically stateless and cannot have life cycle methods so we use hooks to bring state and life cycle methods into functional components
-componentDidMount+componentDidUpdate==>useEffect.
-Every hook in react starts with "use"
-1.useState(): useState is used to update the value and render the component. it is called state
-   const [value,fn]=useState(initialValue);
-2. useEffect(): useEffect is used to handle sideEffects. sideEffect means anything which doesn't effect UI Directly.
-useEffect(callbackfn,[dependencies])
-if no dependencies array then useEffect will get triggered for every state change
-if empty dependencies arrya, then useEffect will get triggereed for only one time(mount)
-if any dependencies, then useEffect will get Triggered for Every State Change of that dependency.
+list of some of the most commonly used React hooks:
 
-useEffect runs after Paint is Done. After component render-->DOM constructed--->paint --->useEffect
+useState: Allows functional components to have state.
 
-useEffect will have some clearup logic which we can write after return in useEffect.
+useEffect: Lets you perform side effects in function components, similar to componentDidMount and componentDidUpdate in class components.
 
-3. useContext():
-useContext works as a consumer for content provider.
-const {values}=useContext(contextname).
-In context API we provide global values by contextname.provide values and we retrive the values by useContext
-4. useRef(): useRef is used for references. mainly this is used for DOM manipulation.
-for example
-const inp= useRef();
-<input type="text" ref={inp} />
-In the above code , whenever user enters somevalue in input automatically dom updates that value into inp .  this type of components are called uncontrolled components.
-5.useNaviage() & useParams()
-6. useLayoutEffect: it is exactly similar to useEffect but only difference is useLayoutEffect will triggered before the Paint. immediate after the DOM.
-We use it in the cases of DOM manipulative data
-7.useMemo: it is used to memeorize expensive calculations.
-it is used to memorize callback functions.
-React.memo is Higher order component(it means it will take component and return component if input props are changed)
-8.useCallback: useCallback is used to remember the callback function. it will triggered only if inputs of the functions are changed(dependencies updated)
-9.useImpertiveHandle & forWardRef
-10.useReducer & Redux
+useContext: Lets you subscribe to React context without introducing nesting.
+
+useReducer: Alternative to useState. Often used for more complex state logic.
+
+useRef: Returns a mutable ref object whose .current property is initialized to the passed argument (initialValue). Useful for accessing DOM elements directly.
+
+useMemo: Memoizes a function so that it only recomputes the memoized value when one of the dependencies has changed.
+
+useCallback: Returns a memoized callback function. Useful for optimizing performance in child components that rely on reference equality.
+
+useLayoutEffect: Similar to useEffect, but fires synchronously after all DOM mutations.
+
+useState:
+
+
+
+import React, { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+    </div>
+  );
+}
+useEffect:
+
+
+
+import React, { useState, useEffect } from 'react';
+
+function Example() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+    </div>
+  );
+}
+useContext:
+
+
+
+import React, { useContext } from 'react';
+
+const ThemeContext = React.createContext('light');
+
+function ThemeComponent() {
+  const theme = useContext(ThemeContext);
+
+  return <div>Current theme: {theme}</div>;
+}
+useReducer:
+
+
+
+import React, { useReducer } from 'react';
+
+const initialState = { count: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div>
+      Count: {state.count}
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+    </div>
+  );
+}
+useRef:
+
+
+
+import React, { useRef } from 'react';
+
+function TextInputWithFocusButton() {
+  const inputEl = useRef(null);
+
+  const onButtonClick = () => {
+    // `current` points to the mounted text input element
+    inputEl.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputEl} type="text" />
+      <button onClick={onButtonClick}>Focus the input</button>
+    </div>
+  );
+}
+useMemo:
+
+
+
+import React, { useMemo, useState } from 'react';
+
+function ExpensiveComponent({ a, b }) {
+  // Only recompute the value when `a` or `b` changes
+  const expensiveValue = useMemo(() => {
+    // Some expensive computation
+    return a * b;
+  }, [a, b]);
+
+  return <div>Expensive value: {expensiveValue}</div>;
+}
+useCallback:
+
+
+import React, { useCallback, useState } from 'react';
+
+function ParentComponent() {
+  const [count, setCount] = useState(0);
+
+  const increment = useCallback(() => {
+    setCount(count + 1);
+  }, [count]);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <ChildComponent onIncrement={increment} />
+    </div>
+  );
+}
+
+function ChildComponent({ onIncrement }) {
+  return <button onClick={onIncrement}>Increment</button>;
+}
+useLayoutEffect:
+
+
+
+import React, { useLayoutEffect, useState } from 'react';
+
+function LayoutEffectComponent() {
+  const [width, setWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return <div>Window width: {width}</div>;
+}
